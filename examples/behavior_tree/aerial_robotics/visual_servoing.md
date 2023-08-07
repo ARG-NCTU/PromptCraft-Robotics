@@ -158,7 +158,7 @@ Procedure:
             [explore_pattern_block]
 ```
 ## Visualize in graphical user interface:
-![](//examples/figs/bt_visual_servoing.png)
+![](/examples/figs/bt_visual_servoing.png)
 
 ## Video:
 [watch demo video](http://gofile.me/773h8/ZKdv0ROEI)
