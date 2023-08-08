@@ -161,4 +161,4 @@ Procedure:
 ![](/examples/figs/bt_visual_servoing.png)
 
 ## Video:
-[watch demo video](http://gofile.me/773h8/ZKdv0ROEI)
+[watch demo video](https://vimeo.com/852542416?share=copy)
