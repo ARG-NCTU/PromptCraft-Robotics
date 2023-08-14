@@ -1,4 +1,4 @@
-# Visual Servoing using LLM-generated Behavior Tree
+# Object Navigation using LLM-generated Behavior Tree
 
 ## The prompts 
 * Environment Descriptions (Provided by Experienced Engineers)
@@ -7,9 +7,11 @@
 * Task Description (Provided by novice user)
 
 ```
-Imagine you are a drone that can move along the YZ axes. and you’re positioned in the center of a basketball court. A person on the side of the court is going to throw a basketball ball in the air somewhere in the court, and your objective is to be at the exact XY location of the ball when it lands.
+Imagine you are helping me interact with the Gazebo simulator for drones. 
 
-The drone has a monocular RGB camera that looks up. And it can return an image from the robot’s camera looking up. According to this image, it can also return the object's relative position inside the view of camera.  
+There is an object detection model on using the images from the front facing camera. It will return two variables:
+obj_list: Which is a list of the names of objects detected in the scene.
+obj_locs: A list of bounding box coordinates in the image for each object
 
 The following subtrees are available. You are not to use any other hypothetical functions.And not all subtrees are suitable and necessary, you need to evaluate and choose the subtrees you need.
 
@@ -25,8 +27,8 @@ Subtrees:
 "linear_z_control": When this subtree is triggered, try to minimize the absolute(drone_z - object_z) when the target object is inside the camera view.
 "report_error": When this subtree is triggered, report current distance (distance = (drone_x - object_X)^2 + (drone_y - object_y)^2 + (drone_z - object_z)^2)^0.5) , and the supervisor will evaulate the performance according to this distance.
 "explore_forward": When this subtree is triggered, move forward a static distance.
-"explore_right": When this subtree is triggered, Rotate 90 degree to right side and raise the flag. If the flag is not been reset, this subtree will not been triggered.
-"explore_left": When this subtree is triggered, Rotate 90 degree to left side and raise the flag. If the flag is not been reset, this subtree will not been triggered.
+"rotate_right": When this subtree is triggered, Rotate 90 degree to right side and raise the flag. If the flag is not been reset, this subtree will not been triggered.
+"rotate_left": When this subtree is triggered, Rotate 90 degree to left side and raise the flag. If the flag is not been reset, this subtree will not been triggered.
 "explore_rotate": When this subtree is triggered, rotate to left side and right side one time and raise the flag. If the flag is not been reset, this subtree will not been triggered.
 "explore_patter_block": When this subtree is triggered, follow the pattern block pattern to explore a huge area.
 
@@ -98,9 +100,7 @@ Procedure:{
     } 
 }
 
-
-
-Now you already in the air, don't need to takeoff. And the ball is aleady in your view, don't need any exloration behaviors. Please executes a visual servoing approach towards the ball.
+Now you already in the air, don't need to takeoff. I need you to help me find an object. Objects might be scattered around the scene, so if you don't find it right away, a good strategy is to turn around a few times to see if it becomes visible.I want to explore and find the red ball.
 
 Please design this task as behavior tree. You can follow the example source tasks. 
 ```
@@ -118,13 +118,25 @@ Procedure:{
     Do phase 1:{
         Do phase 1-1:{
             "object_in_view"
-        }
-        Do phase 1-2 if 1-1 success at the same time:{
+        }Do phase 1-2 if 1-1 success at the same time:{
             "linear_x_control"
             "linear_y_control"
             "linear_z_control"
+        }Do phase 1-3 if 1-2 success:{
+            "report_error"
         }
-    }
+    }Do phase 2 if 1 failed:{
+        Do phase 2-1:{
+            "explore_forward"
+        }Do phase 2-2 if 2-1 success:{
+            "rotate_right"
+            "rotate_left"
+        }Do phase 2-3 if 2-2 success:{
+            "explore_rotate"
+        }Do phase 2-4 if 2-3 success:{
+            "explore_pattern_block"
+        } 
+    } 
 }
 ```
 
@@ -141,9 +153,10 @@ output_file = subtree_assembly(post_processing(string_generated_by_LLM), path_su
 ```
 
 ```
-->
+?
 	->
-		(object_in_view)
+		->
+			(object_in_view)
 		||
 			?
 				(linear_x_in_margin)
@@ -154,12 +167,30 @@ output_file = subtree_assembly(post_processing(string_generated_by_LLM), path_su
 			?
 				(linear_z_in_margin)
 				[linear_z_control]
+		?
+			(not_report_yet)
+			[error_calculation]
+	->
+		?
+			(explore_forward_finished)
+			[explore_forward]
+		->
+			?
+				(rotate_right_finished)
+				[rotate_right]
+			?
+				(rotate_left_finished)
+				[rotate_left]
+		?
+			(explore_left_and_right_finished)
+			[explore_left_and_right]
+		?
+			(explore_pattern_block_finished)
+			[explore_pattern_block]
 ```
 ## Visualize Behavior Tree in graphical user interface (GUI):
-![](/examples/figs/visual_servoing.png)
+![](/examples/figs/object_navigation.png)
 
 ## Video:
-
-<!-- https://github.com/ARG-NCTU/PromptCraft-Robotics/assets/16217256/25b2842d-5572-49af-b0b6-df9d9958294f -->
 
 [Watch on Vimeo]()
