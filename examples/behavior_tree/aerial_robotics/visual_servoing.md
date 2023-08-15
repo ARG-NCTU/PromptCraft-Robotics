@@ -160,7 +160,4 @@ output_file = subtree_assembly(post_processing(string_generated_by_LLM), path_su
 
 ## Video:
 
-<iframe src="https://player.vimeo.com/video/854545223" width="560" height="315" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-
-
 [Watch on Vimeo](https://vimeo.com/854545223?share=copy)
