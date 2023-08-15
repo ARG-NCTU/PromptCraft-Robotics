@@ -160,6 +160,7 @@ output_file = subtree_assembly(post_processing(string_generated_by_LLM), path_su
 
 ## Video:
 
-<!-- https://github.com/ARG-NCTU/PromptCraft-Robotics/assets/16217256/25b2842d-5572-49af-b0b6-df9d9958294f -->
+<iframe src="https://player.vimeo.com/video/854545223" width="560" height="315" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
 
 [Watch on Vimeo](https://vimeo.com/854545223?share=copy)
