@@ -156,7 +156,7 @@ output_file = subtree_assembly(post_processing(string_generated_by_LLM), path_su
 				[linear_z_control]
 ```
 ## Visualize Behavior Tree in graphical user interface (GUI):
-![](/examples/figs/visual_servoing.png)
+![](/examples/figs/text-davinci-003/visual_servoing.png)
 
 ## Video:
 
